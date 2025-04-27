@@ -1,12 +1,19 @@
 from database import get_connection
+from flask import session
 
 def load_data(table_name):
     # CONECTANDO AO BANCO DE DADOS PARA ACESSAR AS INFORMAÇÕES
     conn = get_connection() # FUNÇÃO QUE RETORNA A CONEXÃO COM O BANCO DE DADOS
     cursor = conn.cursor() #FUNCIONA COMO PONTEIRO PARA USAR OUTROS COMANDOS DA BIBLIOTECA
+
+    user_id = session['user_id']
     
     # SELECIONANDO TODAS AS TABELAS
-    cursor.execute(f"SELECT * FROM {table_name} ORDER BY position ASC")
+    cursor.execute(f"""
+            SELECT * FROM {table_name}
+            WHERE user_id = %s OR user_id IS NULL
+            ORDER BY position
+        """, (user_id,))
     data_format = []
     data = cursor.fetchall()
     for note in data:

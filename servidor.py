@@ -1,9 +1,16 @@
-from flask import Flask, render_template_string, request, redirect, jsonify
+from flask import Flask, render_template_string, request, redirect, jsonify, session
+from config import Config
 import views
 import random
-
+import uuid
 
 app = Flask(__name__)
+app.secret_key = Config.APP_SECRET
+
+@app.before_request
+def ensure_user_id():
+    if 'user_id' not in session:
+        session['user_id'] = str(uuid.uuid4())
 
 # Configurando a pasta de arquivos estáticos
 app.static_folder = 'static'

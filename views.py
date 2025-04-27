@@ -1,8 +1,9 @@
 from utils import load_data, load_template, load_note
-import psycopg2
 from database import get_connection
-import os
 from dotenv import load_dotenv
+from flask import session
+import psycopg2
+import os
 
 
 
@@ -22,6 +23,8 @@ def submit(titulo, detalhes, selected_color):
     conn = get_connection()
     cursor = conn.cursor()
 
+    user_id = session['user_id']
+
     # Obtém a maior posição atual
     cursor.execute("SELECT MAX(position) FROM notes")
     max_position = cursor.fetchone()[0]  # Pega o valor máximo encontrado
@@ -33,9 +36,10 @@ def submit(titulo, detalhes, selected_color):
 
     # Insere a nova nota
     cursor.execute(
-        "INSERT INTO notes (title, details, position, color) VALUES (%s, %s, %s, %s)",
-        (titulo, detalhes, new_position, selected_color)
+        "INSERT INTO notes (Title, Details, position, color, user_id) VALUES (%s, %s, %s, %s, %s)",
+        (titulo, detalhes, new_position, selected_color, user_id)
     )
+
     
     conn.commit()
     conn.close()
@@ -58,7 +62,9 @@ def delete_note(note_id):
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM notes WHERE id = %s", (note_id,))
+    user_id = session['user_id']
+
+    cursor.execute("DELETE FROM notes WHERE id = %s AND user_id = %s", (note_id, user_id))
     
     conn.commit()
     conn.close()
