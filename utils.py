@@ -1,9 +1,9 @@
-import sqlite3
+from database import get_connection
 
 def load_data(table_name):
     # CONECTANDO AO BANCO DE DADOS PARA ACESSAR AS INFORMAÇÕES
-    conn = sqlite3.connect('db_notes.db')
-    cursor = conn.cursor() #FUNCIONA COMO PONTEIRO PARA USAR OUTROS COMANDOS DA BIBLIOTECA SQLITE
+    conn = get_connection() # FUNÇÃO QUE RETORNA A CONEXÃO COM O BANCO DE DADOS
+    cursor = conn.cursor() #FUNCIONA COMO PONTEIRO PARA USAR OUTROS COMANDOS DA BIBLIOTECA
     
     # SELECIONANDO TODAS AS TABELAS
     cursor.execute(f"SELECT * FROM {table_name} ORDER BY position ASC")

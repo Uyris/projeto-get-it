@@ -1,6 +1,5 @@
 from flask import Flask, render_template_string, request, redirect, jsonify
 import views
-import sqlite3
 import random
 
 
